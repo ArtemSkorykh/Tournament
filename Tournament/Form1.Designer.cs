@@ -135,7 +135,6 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(485, 444);
             dataGridView1.TabIndex = 0;
-            dataGridView1.Enter += dataGridView1_Enter;
             // 
             // menuStrip1
             // 

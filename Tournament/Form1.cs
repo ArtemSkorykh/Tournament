@@ -10,67 +10,68 @@ namespace Tournament
 {
     public partial class Form1 : Form
     {
+        private TournamentDbContext context;
+
         public Form1()
         {
             InitializeComponent();
+            context = new TournamentDbContext();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            using (TournamentDbContext context = new TournamentDbContext())
-            {
-                List<Team> teams = context.Teams.ToList();
-                dataGridView1.DataSource = teams;
-            }
-        }
 
-        private void dataGridView1_Enter(object sender, EventArgs e)
-        {
-
+            List<Team> teams = context.Teams.ToList();
+            dataGridView1.DataSource = teams;
+            
 
         }
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            using (TournamentDbContext context = new TournamentDbContext())
-            {
-                List<Team> teams = context.Teams.ToList();
-                dataGridView1.DataSource = teams;
-            }
+            List<Team> teams = context.Teams.ToList();
+            dataGridView1.DataSource = teams;         
         }
 
         private void allPlayersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (TournamentDbContext context = new TournamentDbContext())
-            {
-                List<Player> players = context.Players.ToList();
-                dataGridView1.DataSource = players;
-            }
+
+            List<Player> players = context.Players.ToList();
+            dataGridView1.DataSource = players;
+
         }
 
         private void allMatchsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (TournamentDbContext context = new TournamentDbContext())
-            {
-                List<Match> matches = context.Matches.ToList();
-                dataGridView1.DataSource = matches;
-            }
+
+            List<Match> matches = context.Matches.ToList();
+            dataGridView1.DataSource = matches;
+            
         }
 
 
 
-        ///Search
+        ///Search 
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private async void textBox1_TextChanged(object sender, EventArgs e)
         {
-            TournamentDbContext context = new TournamentDbContext();
-            dataGridView1.DataSource = context.SearchTeamsByName(textBox1.Text);
+            List<Team> t = new List<Team>();
+
+            var task = context.SearchTeamsByName(textBox1.Text);
+            t = await task;
+
+            dataGridView1.DataSource = t;
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private async void textBox2_TextChanged(object sender, EventArgs e)
         {
-            TournamentDbContext context = new TournamentDbContext();
-            dataGridView1.DataSource = context.SearchTeamsByCity(textBox1.Text);
+
+            List<Team> t = new List<Team>();
+
+            var task = context.SearchTeamsByCity(textBox1.Text);
+            t = await task;
+
+            dataGridView1.DataSource = t;
         }
 
         private void teambyNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -102,45 +103,62 @@ namespace Tournament
 
         ///Display Special Teams
 
-        private void withMostGoalsConcededToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void withMostGoalsConcededToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Team> t = new List<Team>();
-            TournamentDbContext context = new TournamentDbContext();
-            t.Add(context.GetTeamWithMostGoalsConceded());
+
+            var task = context.GetTeamWithMostGoalsConcededAsync();
+            Team team = await task;
+            t.Add(team);
+
             dataGridView1.DataSource = t;
         }
 
-        private void withMostWinsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void withMostWinsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Team> t = new List<Team>();
-            TournamentDbContext context = new TournamentDbContext();
-            t.Add(context.GetTeamWithMostWins());
+
+            var task = context.GetTeamWithMostWins();
+            Team team = await task;
+            t.Add(team);
+            
             dataGridView1.DataSource = t;
         }
 
-        private void withMostLossesToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void withMostLossesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Team> t = new List<Team>();
-            TournamentDbContext context = new TournamentDbContext();
-            t.Add(context.GetTeamWithMostLosses());
+
+            var task = context.GetTeamWithMostLosses();
+            Team team = await task;
+            t.Add(team);
+
             dataGridView1.DataSource = t;
         }
 
-        private void withMostDrawsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void withMostDrawsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<Team> t = new List<Team>();
-            TournamentDbContext context = new TournamentDbContext();
-            t.Add(context.GetTeamWithMostDraws());
+
+            var task = context.GetTeamWithMostDraws();
+            Team team = await task;
+            t.Add(team);
+
+            dataGridView1.DataSource = t;
+
+        }
+
+        private async void withMostGoalsScoredToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<Team> t = new List<Team>();
+
+            var task = context.GetTeamWithMostGoalsScored();
+            Team team = await task;
+            t.Add(team);
+
             dataGridView1.DataSource = t;
         }
 
-        private void withMostGoalsScoredToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            List<Team> t = new List<Team>();
-            TournamentDbContext context = new TournamentDbContext();
-            t.Add(context.GetTeamWithMostGoalsScored());
-            dataGridView1.DataSource = t;
-        }
         // Add Team
         private void teamToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -265,10 +283,9 @@ namespace Tournament
                     GoalsConceded = (int)numericUpDown5.Value
                 };
 
-                TournamentDbContext i = new TournamentDbContext();
-                i.Teams.Add(te);
-                i.SaveChanges();
-                dataGridView1.DataSource = i.Teams.ToList();
+                context.Teams.Add(te);
+                context.SaveChanges();
+                dataGridView1.DataSource = context.Teams.ToList();
             }
         }
 
@@ -279,13 +296,12 @@ namespace Tournament
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (TournamentDbContext context = new TournamentDbContext())
-            {
+
                 List<Team> t = context.Teams.ToList();
                 context.Teams.Remove(t[this.dataGridView1.SelectedRows[0].Index]);
                 context.SaveChanges();
                 dataGridView1.DataSource = context.Teams.ToList();
-            }
+            
 
         }
 
@@ -326,9 +342,6 @@ namespace Tournament
                     GoalsConceded = (int)numericUpDown5.Value
                 };
 
-                using (TournamentDbContext context = new TournamentDbContext())
-                {
-
                     List<Team> t = context.Teams.ToList();
                     te.Id = this.dataGridView1.SelectedRows[0].Index;
                     context.Teams.ToList()[this.dataGridView1.SelectedRows[0].Index] = te;
@@ -336,7 +349,6 @@ namespace Tournament
                     context.SaveChanges();
                     dataGridView1.DataSource = context.Teams.ToList();
 
-                }
 
             }
         }
@@ -374,10 +386,10 @@ namespace Tournament
                     TeamId = int.Parse(textBox6.Text)
                 };
 
-                TournamentDbContext i = new TournamentDbContext();
-                i.Players.Add(tet);
-                i.SaveChanges();
-                dataGridView1.DataSource = i.Players.ToList();
+
+                context.Players.Add(tet);
+                context.SaveChanges();
+                dataGridView1.DataSource = context.Players.ToList();
             }
         }
 
@@ -430,8 +442,6 @@ namespace Tournament
                 };
 
 
-                using (TournamentDbContext context = new TournamentDbContext())
-                {
 
                     List<Player> p = context.Players.ToList();
                     tet.Id = this.dataGridView1.SelectedRows[0].Index;
@@ -440,7 +450,7 @@ namespace Tournament
                     context.SaveChanges();
                     dataGridView1.DataSource = context.Players.ToList();
 
-                }
+                
             }
         }
 
@@ -480,10 +490,9 @@ namespace Tournament
                     MatchDate = dateTimePicker1.Value
                 };
 
-                TournamentDbContext i = new TournamentDbContext();
-                i.Matches.Add(te);
-                i.SaveChanges();
-                dataGridView1.DataSource = i.Matches.ToList();
+                context.Matches.Add(te);
+                context.SaveChanges();
+                dataGridView1.DataSource = context.Matches.ToList();
             }
         }
 
@@ -539,8 +548,7 @@ namespace Tournament
                     MatchDate = dateTimePicker1.Value
                 };
 
-                using (TournamentDbContext context = new TournamentDbContext())
-                {
+
 
                     List<Match> p = context.Matches.ToList();
                     te.Id = this.dataGridView1.SelectedRows[0].Index;
@@ -549,7 +557,7 @@ namespace Tournament
                     context.SaveChanges();
                     dataGridView1.DataSource = context.Matches.ToList();
 
-                }
+                
             }
         }
     }

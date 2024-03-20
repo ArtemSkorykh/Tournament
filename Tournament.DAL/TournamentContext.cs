@@ -35,45 +35,44 @@ namespace Tournament.DAL
         }
 
         //Search
-
-        public List<Team> SearchTeamsByName(string teamName)
+        public async Task<List<Team>> SearchTeamsByName(string teamName)
         {
-            return Teams.Where(t => t.Name == teamName).ToList();
+            return await Teams.Where(t => t.Name == teamName).ToListAsync();
         }
 
-        public List<Team> SearchTeamsByCity(string city)
+        public async Task<List<Team>> SearchTeamsByCity(string city)
         {
-            return Teams.Where(t => t.City == city).ToList();
+            return await Teams.Where(t => t.City == city).ToListAsync();
         }
 
         //Display
 
-        public Team GetTeamWithMostWins()
+        public async Task<Team> GetTeamWithMostWins()
         {
-            return Teams.OrderByDescending(t => t.Wins).FirstOrDefault();
+            return await Teams.OrderByDescending(t => t.Wins).FirstOrDefaultAsync();
         }
 
-        public Team GetTeamWithMostLosses()
+        public async Task<Team> GetTeamWithMostLosses()
         {
-            return Teams.OrderByDescending(t => t.Losses).FirstOrDefault();
+            return await Teams.OrderByDescending(t => t.Losses).FirstOrDefaultAsync();
         }
 
-        public Team GetTeamWithMostDraws()
+        public async Task<Team> GetTeamWithMostDraws()
         {
-            return Teams.OrderByDescending(t => t.Draws).FirstOrDefault();
+            return await Teams.OrderByDescending(t => t.Draws).FirstOrDefaultAsync();
         }
 
-        public Team GetTeamWithMostGoalsScored()
+        public async Task<Team> GetTeamWithMostGoalsScored()
         {
-            return Teams.OrderByDescending(t => t.GoalsScored).FirstOrDefault();
+            return await Teams.OrderByDescending(t => t.GoalsScored).FirstOrDefaultAsync();
         }
 
-        public Team GetTeamWithMostGoalsConceded()
+        public async Task<Team> GetTeamWithMostGoalsConcededAsync()
         {
-            return Teams.OrderByDescending(t => t.GoalsConceded).FirstOrDefault();
+            return await Teams.OrderByDescending(t => t.GoalsConceded).FirstOrDefaultAsync();
         }
 
-       
+
     }
 }
 
